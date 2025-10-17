@@ -1,8 +1,8 @@
-name: Laravel Deployment
+name: Laravel Deployment to panel.kelasmaster.id
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -41,7 +41,7 @@ jobs:
         cp .env.example .env
         php artisan key:generate
 
-    - name: Deploy to server
+    - name: Deploy to panel.kelasmaster.id
       uses: easingthemes/ssh-deploy@v4
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}

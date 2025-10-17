@@ -1,11 +1,11 @@
 #!/bin/bash
-# Deployment script for Laravel application
+# Deployment script for Laravel application on panel.kelasmaster.id
 
 # Variables
 APP_NAME="specmaster-demo"
-APP_PATH="/var/www/$APP_NAME"
-REPO_URL="https://github.com/yourusername/$APP_NAME.git"
-BRANCH="main"
+APP_PATH="/var/www/panel.kelasmaster.id"
+REPO_URL="https://github.com/andriko484/specdemo.git"
+BRANCH="master"
 
 # Update system
 echo "Updating system packages..."
@@ -54,14 +54,14 @@ php artisan key:generate
 
 # Configure database
 echo "Configuring database..."
-sudo mysql -e "CREATE DATABASE IF NOT EXISTS ${APP_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-sudo mysql -e "CREATE USER IF NOT EXISTS 'laravel_user'@'localhost' IDENTIFIED BY 'password';"
-sudo mysql -e "GRANT ALL PRIVILEGES ON ${APP_NAME}.* TO 'laravel_user'@'localhost';"
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS specmaster_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+sudo mysql -e "CREATE USER IF NOT EXISTS 'specmaster_user'@'localhost' IDENTIFIED BY 'password';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON specmaster_demo.* TO 'specmaster_user'@'localhost';"
 sudo mysql -e "FLUSH PRIVILEGES;"
 
 # Update .env with database credentials
-sed -i "s/DB_DATABASE=laravel/DB_DATABASE=${APP_NAME}/" .env
-sed -i "s/DB_USERNAME=root/DB_USERNAME=laravel_user/" .env
+sed -i "s/DB_DATABASE=laravel/DB_DATABASE=specmaster_demo/" .env
+sed -i "s/DB_USERNAME=root/DB_USERNAME=specmaster_user/" .env
 sed -i "s/DB_PASSWORD=/DB_PASSWORD=password/" .env
 
 # Run migrations
@@ -70,10 +70,10 @@ php artisan migrate --force
 
 # Configure Nginx
 echo "Configuring Nginx..."
-sudo tee /etc/nginx/sites-available/$APP_NAME > /dev/null <<EOF
+sudo tee /etc/nginx/sites-available/panel.kelasmaster.id > /dev/null <<EOF
 server {
     listen 80;
-    server_name your_domain.com;
+    server_name panel.kelasmaster.id;
     root $APP_PATH/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
@@ -104,7 +104,7 @@ server {
 }
 EOF
 
-sudo ln -s /etc/nginx/sites-available/$APP_NAME /etc/nginx/sites-enabled/
+sudo ln -sf /etc/nginx/sites-available/panel.kelasmaster.id /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
@@ -112,7 +112,7 @@ sudo systemctl reload nginx
 echo "Setting up supervisor for queue workers..."
 sudo apt install -y supervisor
 
-sudo tee /etc/supervisor/conf.d/$APP_NAME.conf > /dev/null <<EOF
+sudo tee /etc/supervisor/conf.d/specmaster-demo.conf > /dev/null <<EOF
 [program:laravel-worker]
 process_name=%(program_name)s_%(process_num)02d
 command=php $APP_PATH/artisan queue:work --sleep=3 --tries=3
@@ -128,4 +128,4 @@ sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start laravel-worker:*
 
-echo "Deployment completed successfully!"
+echo "Deployment to panel.kelasmaster.id completed successfully!"

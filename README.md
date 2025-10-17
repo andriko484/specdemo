@@ -1,13 +1,13 @@
-# SpecMaster Demo Laravel Application
+# SpecMaster Demo Laravel Application for panel.kelasmaster.id
 
-This is a simple Laravel application for demonstration purposes. It includes a basic CRUD functionality for posts with MySQL database integration.
+This is a simple Laravel application configured for deployment on panel.kelasmaster.id. It includes a basic CRUD functionality for posts with MySQL database integration.
 
 ## Features
 
 - Create, Read, Update, and Delete posts
 - Responsive UI with Tailwind CSS
 - MySQL database integration
-- Ready for deployment to VPS
+- Ready for deployment to panel.kelasmaster.id
 
 ## Requirements
 
@@ -20,7 +20,7 @@ This is a simple Laravel application for demonstration purposes. It includes a b
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/specmaster-demo.git
+   git clone https://github.com/andriko484/specdemo.git
    cd specmaster-demo
    ```
 
@@ -47,8 +47,8 @@ This is a simple Laravel application for demonstration purposes. It includes a b
    DB_HOST=127.0.0.1
    DB_PORT=3306
    DB_DATABASE=specmaster_demo
-   DB_USERNAME=root
-   DB_PASSWORD=
+   DB_USERNAME=specmaster_user
+   DB_PASSWORD=password
    ```
 
 6. Run database migrations:
@@ -61,9 +61,9 @@ This is a simple Laravel application for demonstration purposes. It includes a b
    php artisan serve
    ```
 
-## Deployment to VPS
+## Deployment to panel.kelasmaster.id
 
-The application includes a deployment script (`deploy.sh`) that automates the deployment process to a VPS running Ubuntu.
+The application includes a deployment script (`deploy.sh`) that automates the deployment process to panel.kelasmaster.id.
 
 ### Automated Deployment
 
@@ -86,7 +86,7 @@ The application includes a deployment script (`deploy.sh`) that automates the de
    - Composer
    - Node.js and npm
 
-2. Clone the repository to `/var/www/specmaster-demo`
+2. Clone the repository to `/var/www/panel.kelasmaster.id`
 
 3. Install dependencies:
    ```bash
@@ -97,8 +97,8 @@ The application includes a deployment script (`deploy.sh`) that automates the de
 
 4. Set proper permissions:
    ```bash
-   sudo chown -R www-data:www-data /var/www/specmaster-demo
-   sudo chmod -R 755 /var/www/specmaster-demo/storage /var/www/specmaster-demo/bootstrap/cache
+   sudo chown -R www-data:www-data /var/www/panel.kelasmaster.id
+   sudo chmod -R 755 /var/www/panel.kelasmaster.id/storage /var/www/panel.kelasmaster.id/bootstrap/cache
    ```
 
 5. Configure environment variables and generate app key:
