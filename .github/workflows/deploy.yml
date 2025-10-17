@@ -1,0 +1,63 @@
+name: Laravel Deployment
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, xml, ctype, iconv, mysql, zip, bcmath, curl, json
+        coverage: none
+
+    - name: Install dependencies
+      run: |
+        composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install npm dependencies
+      run: |
+        npm install
+
+    - name: Build assets
+      run: |
+        npm run build
+
+    - name: Prepare for deployment
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+
+    - name: Deploy to server
+      uses: easingthemes/ssh-deploy@v4
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        ARGS: "-avz --delete"
+        SOURCE: "/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+        EXCLUDE: "/.git/, /.github/, /node_modules/, /.env, /.env.example, /storage/logs/, /tests/"
+
+    - name: Run migrations
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_TARGET }}
+          php artisan migrate --force
